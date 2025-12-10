@@ -1,73 +1,102 @@
+
 import 'package:flutter/material.dart';
 
 void main() {
-  runApp(const MyApp());
+  
+  runApp(ProfileApp()
+  );
+  debugShowCheckedModeBanner:false;
 }
 
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+class ProfileApp extends StatefulWidget {
+  @override
+  _ProfileAppState createState() => _ProfileAppState();
+}
 
-  // This widget is the root of your application.
+class _ProfileAppState extends State<ProfileApp> {
+  final _formKey = GlobalKey<FormState>();
+  String _name = '';
+  String _email = '';
+  final TextEditingController _passwordController = TextEditingController();
+
+
+  void _submitForm() {
+    if (_formKey.currentState!.validate()) {
+      _formKey.currentState!.save();
+      print('Name: $_name, Email: $_email, Password : ${_passwordController.text}');
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      debugShowCheckedModeBanner: false,
-        home:Scaffold(
-            appBar: AppBar(title: Text('User Profile:Amani'),),
-            body:Column(
-                children: [
-                  Stack(
-                    alignment: Alignment.center,
-                    children: [
-                      Container(
-                          width:400,
-                          height:190,
-                          padding: EdgeInsets.all(30),
-                          color: Colors.deepPurpleAccent,
-                          ),
-                      Positioned(
-                        top: 20,
-                        child:
-                        CircleAvatar(
-                          radius: 50,
-                          backgroundImage: Image.asset("image/amani.jpg").image,
-                        ),),
-
-                      Positioned(
-                        bottom: 5,
-                        child: Column(
-                          children: [
-                            Text('Amani Mohammed',style: TextStyle(fontSize: 20,color: Colors.white),),
-                            SizedBox(height: 6,),
-                            Text('Sofftware Devloper',style: TextStyle(fontSize: 18,color: Colors.orange),) ,
-
-                          ],
-                        ) ,
-                      ),
-                    ],
-                  ),
-
-
-
-                  Padding(padding:EdgeInsets.all(10.0),
-                    child:  Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text('Email',style: TextStyle(color: Colors.indigo),),
-                        Text('amanialktheeri138@gmail.com'),
-                      ],
-                    ),),
-                  Divider(),
-                  Padding(padding: const EdgeInsets.all(10.0),
-                    child:  Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text('Phone',style: TextStyle(color: Colors.indigo),),
-                        Text('781593861'),
-                      ],
-                    ),),
-
-
-                ]
-            ))
-    );}}
+      home: Scaffold(
+        appBar: AppBar(title: Text('Form Example')),
+        body: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Form(
+            key: _formKey,
+            child: Column(
+              children: [
+                TextFormField(
+                  decoration: InputDecoration(labelText: 'Name'),
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Please enter your name';
+                    }
+                    return null;
+                  },
+                  onSaved: (value) {
+                    _name = value!;
+                  },
+                ),
+                SizedBox(height: 16),
+                TextFormField(
+                  decoration: InputDecoration(labelText: 'Email'),
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Please enter your email';
+                    } else if (!RegExp(r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+").hasMatch(value!)) {
+                      return 'Please enter a valid email address';
+                    }
+                    return null;
+                  },
+                  onSaved: (value) {
+                    _email = value!;
+                  },
+                ),
+                TextFormField(
+                  controller: _passwordController,
+                  decoration: InputDecoration(labelText: 'Password'),
+                  obscureText: true,
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Please enter your password';
+                    }
+                    else if (value!.length<8) {
+                      return ' password should be at least 8 chars';
+                    }else if (!RegExp("[a-z]").hasMatch(value!)) {
+                      return ' password should at least one lowercase chars';
+                    }else if (!RegExp("[A-Z]").hasMatch(value!)) {
+                      return ' password should at least one uppercase chars';
+                    }else if (!RegExp("[!#\$%&'*+-/=?^_`{|}~@]").hasMatch(value!)) {
+                      return ' password should at least one symbol';
+                    }else if (!RegExp("[0-9]").hasMatch(value!)) {
+                      return ' password should at least one number';
+                    }
+                    return null;
+                  },
+                ),
+                SizedBox(height: 20),
+                ElevatedButton(
+                  onPressed: _submitForm,
+                  child: Text('Submit'),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}

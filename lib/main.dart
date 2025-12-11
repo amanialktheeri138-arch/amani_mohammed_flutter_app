@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'secand.dart';
+import 'secand_.dart';
 import 'about.dart';
 void main() {
   runApp(const MyApp());
